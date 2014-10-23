@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('scrumkizApp', ['ionic', 'scrumkizApp.controllers', 'scrumkizApp.services'])
+angular.module('scrumkizApp', ['ionic', 'timer', 'scrumkizApp.controllers', 'scrumkizApp.services'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
