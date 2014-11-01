@@ -27,58 +27,54 @@ angular.module('scrumkizApp', ['ionic', 'timer', 'scrumkizApp.controllers', 'scr
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
-  $stateProvider
 
-    // setup an abstract state for the tabs directive
-    .state('tab', {
-      url: "/tab",
-      abstract: true,
-      templateUrl: "templates/tabs.html"
-    })
 
-    // Each tab has its own nav history stack:
+  $stateProvider.state('home', {
+    url: "/home",
+    templateUrl: "templates/home.html",
+    controller: 'HomeCtrl'
+  })
 
-    .state('tab.home', {
-      url: '/home',
-      views: {
-        'tab-home': {
-          templateUrl: 'templates/tab-home.html',
-          controller: 'HomeCtrl'
-        }
+  .state('register', {
+    url: "/register",
+    templateUrl: "templates/register.html",
+    controller: 'RegisterCtrl'
+  })
+
+  .state('login', {
+    url: "/login",
+    templateUrl: "templates/login.html",
+    controller: 'LoginCtrl'
+  })
+
+.state('tab', {
+  url: "/tab",
+  abstract: true,
+  templateUrl: "templates/tabs.html"
+})
+
+.state('tab.quiz', {
+    url: '/quiz',
+    views: {
+      'tab-quiz': {
+        templateUrl: 'templates/tab-quiz.html',
+        controller: 'QuizCtrl'
       }
-    })
+    }
+  })
 
-    .state('tab.quiz', {
-      url: '/quiz',
-      views: {
-        'tab-quiz': {
-          templateUrl: 'templates/tab-quiz.html',
-          controller: 'QuizCtrl'
-        }
-      }
-    })
-
-    .state('tab.settings', {
-      url: '/settings',
-      views: {
-        'tab-settings': {
-          templateUrl: 'templates/tab-settings.html',
-          controller: 'SettingsCtrl'
-        }
-      }
-    })
-    .state('tab.ranking', {
-      url: '/ranking',
-      views: {
-        'tab-ranking': {
-          templateUrl: 'templates/tab-ranking.html',
-          controller: 'RankingCtrl'
-        }
-      }
-    });
+.state('tab.ranking', {
+  url: '/ranking',
+  views: {
+    'tab-ranking': {
+      templateUrl: 'templates/tab-ranking.html',
+      controller: 'RankingCtrl'
+    }
+  }
+});
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/home');
+  $urlRouterProvider.otherwise('/tab/quiz');
 
 });
 
