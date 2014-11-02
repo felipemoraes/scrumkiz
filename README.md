@@ -15,7 +15,6 @@ Notificação de novas questões e respostas são transmistidos via Websocket pa
 
 **Screenshot da tela de Admin**
 
-<img src="docs/admin_shot.png" />
 
 
 
