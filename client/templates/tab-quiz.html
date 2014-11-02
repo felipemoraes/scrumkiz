@@ -1,0 +1,78 @@
+<ion-view title="Scrumkiz">
+<ion-content class="padding">
+
+<div class="" ng-show="q.question == 'start' && q.question != 'end'">
+
+    <div class="list card">
+
+        <div class="item item-avatar">
+            <img src="img/tab-logo.png">
+            <h2>Bem-vindo ao Scrumkiz</h2>
+            <p>Um jogo da FenixCode</p>
+        </div>
+
+        <div class="item item-image">
+            <img src="regras.jpg">
+        </div>
+
+
+        <a class="item item-icon-left assertive" ng-click="nextQuestion()">
+            <i class="icon ion-play"></i>
+            Começar a jogar
+        </a>
+
+        <a class="item item-icon-left assertive icon ion-wrench" ng-show="is_admin" href="/admin.html" target="_blank"> Abrir página de admistrador</a>
+    </div>
+
+</div>
+
+<div class="" ng-show="q.question != 'start' && q.question != 'end'">
+
+    <div class="item item-text-wrap">
+        <h3>{{q.question}}</h3>
+    </div>
+
+    <div class="" ng-if="!hasAnswered()">
+        <div class="list">
+            <a class="item item-icon-left" ng-repeat="choice in q.answers" ng-value="$index" ng-click="saveChoice($index)">
+                <h2>{{ choice }}</h2>
+            </a>
+        </div>
+    </div>
+
+    <div class="" ng-if="hasAnswered() && !answerIndex">
+        <div class="list">
+            <a class="item item-icon-left" ng-repeat="choice in q.answers">
+                <h2>{{ choice }}</h2>
+            </a>
+        </div>
+    </div>
+
+    <div class="" ng-if="hasAnswered() && answerIndex">
+        <div class="list">
+            <a class="item item-icon-left" ng-repeat="choice in q.answers">
+                <i class="icon ion-checkmark balanced" ng-show="isCorrectAnswer($index)"></i>
+                <h2 ng-class='{"balanced": userAnswerCorrect($index), "assertive": userAnswerWrong($index)}'>{{ choice }}</h2>
+            </a>
+        </div>
+
+    </div>
+
+    <div class="row row-center">
+        <div class="col"><a class="button  ion-close-circled button-assertive" href="#/tab/quiz"></a></div>
+        <div class="col"><a class="button ion-arrow-right-c" ng-click="nextQuestion()"></a> </div>
+        <div class="col"><a class="button icon-right ion-checkmark-circled button-balanced" ng-click="nextQuestion()"></a> </div>
+
+        <div class="col"><h3><timer interval="1000"> <i class="icon ion-clock"></i> {{minutes}}:{{seconds}}</timer></h3></div>
+    </div>
+
+
+    <div class="card" ng-show="q.question == 'end'">
+        <h1>Obrigado por jogar! Veja sua posição no Ranking</h1>
+    </div>
+
+
+
+</ion-content>
+
+</ion-view>

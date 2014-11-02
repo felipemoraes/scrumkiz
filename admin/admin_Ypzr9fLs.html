@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html ng-app="admin">
+
+<head>
+    <meta charset="utf-8">
+    <title>Scrumkiz Admin</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+</head>
+
+<body ng-controller="AdminCtrl">
+    <div class="container">
+
+        <div class="page-header">
+            <h1>Scrumkiz Admin</h1>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+
+                <h4>
+            Questão atual <small ng-show="currentQuestion.question">{{currentQuestion.question_index + 1}} de {{currentQuestion.question_total}}</small>
+          </h4>
+                <p><strong>{{currentQuestion.question}}</strong>
+                </p>
+                <div ng-show="answers && answers.length">
+                    <h5>Respostas:</h5>
+                    <ul class="list-group">
+                        <li ng-repeat="answer in answers" ng-class='{"list-group-item list-group-item-success": answer.correct, "list-group-item list-group-item-danger": !answer.correct}'>{{answer.user.name}}</li>
+                    </ul>
+                </div>
+                <p>
+                    <button class="btn btn-primary" ng-click="nextQuestion()">Próxima Questão</button>
+                </p>
+
+                <hr>
+
+                <h4>
+            Ranking
+          </h4>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="user in leaders">
+                            <th>{{user.name}}</th>
+                            <td>{{user.points}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    <button class="btn btn-danger" ng-click="clearLeaders()">Restart Quiz</button>
+                </p>
+            </div>
+
+            <div class="col-md-4">
+                <h3>
+            Adicionar Questão
+          </h3>
+                <form>
+                    <div class="form-group">
+                        <label for="form-question">Questão</label>
+                        <p class="alert alert-danger" ng-show="!questionErrors.question">
+                            <strong>Error!</strong> Por favor forneçaa uma questão.
+                        </p>
+                        <input type="text" class="form-control" id="form-question" ng-model="question.question" placeholder="Preencha com uma questão...">
+                    </div>
+
+                    <label>Respostas</label>
+                    <p>Selecione o index da resposta correta da próxima questão</p>
+                    <p class="alert alert-danger" ng-show="!questionErrors.answers">
+                        <strong>Erro!</strong> Por favor forneça pelo menos uma resposta correta.
+                    </p>
+
+                    <div class="form-group" ng-repeat="item in questionAnswers">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                  <input type="radio" ng-model="question.answer_index" ng-value="$index">
+                </span>
+                            <input type="text" class="form-control" ng-model="questionAnswers[$index].text" placeholder="Preenche com uma resposta...">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-default" ng-click="addAnswer()">Adicionar Resposta</button>
+                    <button class="btn btn-primary" ng-click="saveQuestion()">Salvar</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="lib/ionic/js/angular/angular-resource.js"></script>
+
+    <!-- your app's js -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/admin_app.js"></script>
+    <script src="js/services.js"></script>
+
+</body>
+
+</html>
