@@ -1,6 +1,6 @@
 # Scrumkiz
 
-Esta é uma aplicação implementada durante a disciplina de Engenharia de Software da Universidade Federal de Minas Gerais. É um jogo de perguntas e perguntas, com um dos temas mais populares do desenvolvimento de software, a metodologia Scrum. O aplicativo móvel em si é um aplicativo AngularJS híbrido composto de HTML, CSS e Javascript. O lado do The
+Esta é uma aplicação implementada durante a disciplina de Engenharia de Software da Universidade Federal de Minas Gerais. É um jogo de perguntas e respostas, com um dos temas mais populares do desenvolvimento de software, a metodologia Scrum. O aplicativo móvel em si é um aplicativo AngularJS híbrido composto de HTML, CSS e Javascript. O lado do The
 servidor é implementado como aplicação Express Node.js rodando por cima de uma banco de dados Postgres.
 
 ## Como jogar
