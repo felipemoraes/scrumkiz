@@ -34,7 +34,8 @@ angular.module('starter.services', [])
 .factory('AuthenticationService', function() {
   var auth = {
     isAuthenticated: false,
-    isAdmin: false
+    isAdmin: false,
+    currentUser: null
   }
 
   return auth;
@@ -86,7 +87,7 @@ angular.module('starter.services', [])
         console.log(result.data);
         AuthenticationService.isAuthenticated = true;
         AuthenticationService.isAdmin = result.data.is_admin;
-
+        AuthenticationService.currentUser = result.data.id;
         $window.sessionStorage.name     = result.data.name;
         $window.sessionStorage.is_admin = result.data.is_admin;
         $window.localStorage.token      = result.data.token;

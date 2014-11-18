@@ -47,7 +47,7 @@ angular.module('starter.controllers', [])
     UserResponse.set($scope.q.id, index + 1);
     var a = new Answer({
       question_id: $scope.q.id,
-      user_id: '1',
+      user_id: AuthenticationService.currentUser,
       answer_index: index + 1
     });
     a.$save(function() {
@@ -60,6 +60,7 @@ angular.module('starter.controllers', [])
       $scope.answerIndex = true;
     });
   };
+
 
   Question.query({
     show: true,
