@@ -1,4 +1,4 @@
-angular.module('timer', [])
+var timerModule = angular.module('timer', [])
   .directive('timer', ['$compile', function ($compile) {
     return  {
       restrict: 'EAC',
@@ -8,15 +8,16 @@ angular.module('timer', [])
         startTimeAttr: '=startTime',
         endTimeAttr: '=endTime',
         countdownattr: '=countdown',
+        finishCallback: '&finishCallback',
         autoStart: '&autoStart',
         maxTimeUnit: '='
       },
-      controller: ['$scope', '$element', '$attrs', '$timeout', '$stateParams', function ($scope, $element, $attrs, $timeout, $stateParams) {
+      controller: ['$scope', '$element', '$attrs', '$timeout', function ($scope, $element, $attrs, $timeout) {
 
         // Checking for trim function since IE8 doesn't have it
         // If not a function, create tirm with RegEx to mimic native trim
-        if(typeof String.prototype.trim !== 'function') {
-          String.prototype.trim = function() {
+        if (typeof String.prototype.trim !== 'function') {
+          String.prototype.trim = function () {
             return this.replace(/^\s+|\s+$/g, '');
           };
         }
@@ -37,9 +38,6 @@ angular.module('timer', [])
         $scope.timeoutId = null;
         $scope.countdown = $scope.countdownattr && parseInt($scope.countdownattr, 10) >= 0 ? parseInt($scope.countdownattr, 10) : undefined;
         $scope.isRunning = false;
-        
-        // Tyler Added 
-        $scope.result = parseFloat($stateParams.goal);
 
         $scope.$on('timer-start', function () {
           $scope.start();
@@ -108,73 +106,75 @@ angular.module('timer', [])
         });
 
         function calculateTimeUnits() {
-
-            // compute time values based on maxTimeUnit specification
-            if(!$scope.maxTimeUnit || $scope.maxTimeUnit === 'day') {
-              $scope.seconds = Math.floor(($scope.millis / 1000) % 60);            
-              $scope.minutes = Math.floor((($scope.millis / (60000)) % 60));            
-              $scope.hours = Math.floor((($scope.millis / (3600000)) % 24));            
-              $scope.days = Math.floor((($scope.millis / (3600000)) / 24));
-              $scope.months = 0;
-              $scope.years = 0;            
-            } else if($scope.maxTimeUnit === 'second') {
-              $scope.seconds = Math.floor($scope.millis / 1000);
-              $scope.minutes = 0;
-              $scope.hours = 0;
-              $scope.days = 0;
-              $scope.months = 0;
-              $scope.years = 0;
-            } else if($scope.maxTimeUnit === 'minute') {
-              $scope.seconds = Math.floor(($scope.millis / 1000) % 60);            
-              $scope.minutes = Math.floor($scope.millis / 60000);
-              $scope.hours = 0;
-              $scope.days = 0;
-              $scope.months = 0;
-              $scope.years = 0;
-            } else if($scope.maxTimeUnit === 'hour') {
-              $scope.seconds = Math.floor(($scope.millis / 1000) % 60);            
-              $scope.minutes = Math.floor((($scope.millis / (60000)) % 60));
-              $scope.hours = Math.floor($scope.millis / 3600000);
-              $scope.days = 0;
-              $scope.months = 0;
-              $scope.years = 0;
-            } else if($scope.maxTimeUnit === 'month') {
-              $scope.seconds = Math.floor(($scope.millis / 1000) % 60);            
-              $scope.minutes = Math.floor((($scope.millis / (60000)) % 60));
-              $scope.hours = Math.floor((($scope.millis / (3600000)) % 24));
-              $scope.days = Math.floor((($scope.millis / (3600000)) / 24) % 30);
-              $scope.months = Math.floor((($scope.millis / (3600000)) / 24) / 30);
-              $scope.years = 0;
-            } else if($scope.maxTimeUnit === 'year') {
-              $scope.seconds = Math.floor(($scope.millis / 1000) % 60);            
-              $scope.minutes = Math.floor((($scope.millis / (60000)) % 60));
-              $scope.hours = Math.floor((($scope.millis / (3600000)) % 24));
-              $scope.days = Math.floor((($scope.millis / (3600000)) / 24) % 30); 
-              $scope.months = Math.floor((($scope.millis / (3600000)) / 24 / 30) % 12);
-              $scope.years = Math.floor(($scope.millis / (3600000)) / 24 / 365);
-            }
-            
-            // plural - singular unit decision
-            $scope.secondsS = $scope.seconds==1 ? '' : 's';
-            $scope.minutesS = $scope.minutes==1 ? '' : 's';
-            $scope.hoursS = $scope.hours==1 ? '' : 's';
-            $scope.daysS = $scope.days==1 ? '' : 's';
-            $scope.monthsS = $scope.months==1 ? '' : 's';
-            $scope.yearsS = $scope.years==1 ? '' : 's';
-            //add leading zero if number is smaller than 10
-            $scope.sseconds = $scope.seconds < 10 ? '0' + $scope.seconds : $scope.seconds;
-            $scope.mminutes = $scope.minutes < 10 ? '0' + $scope.minutes : $scope.minutes;
-            $scope.hhours =  $scope.hours < 10 ? '0' + $scope.hours : $scope.hours;
-            $scope.ddays =  $scope.days < 10 ? '0' + $scope.days : $scope.days;
-            $scope.mmonths = $scope.months < 10 ? '0' + $scope.months : $scope.months;
-            $scope.yyears = $scope.years < 10 ? '0' + $scope.years : $scope.years;
+          if ($attrs.startTime !== undefined){
+            $scope.millis = new Date() - new Date($scope.startTimeAttr);
+          }
+          // compute time values based on maxTimeUnit specification
+          if (!$scope.maxTimeUnit || $scope.maxTimeUnit === 'day') {
+            $scope.seconds = Math.floor(($scope.millis / 1000) % 60);
+            $scope.minutes = Math.floor((($scope.millis / (60000)) % 60));
+            $scope.hours = Math.floor((($scope.millis / (3600000)) % 24));
+            $scope.days = Math.floor((($scope.millis / (3600000)) / 24));
+            $scope.months = 0;
+            $scope.years = 0;
+          } else if ($scope.maxTimeUnit === 'second') {
+            $scope.seconds = Math.floor($scope.millis / 1000);
+            $scope.minutes = 0;
+            $scope.hours = 0;
+            $scope.days = 0;
+            $scope.months = 0;
+            $scope.years = 0;
+          } else if ($scope.maxTimeUnit === 'minute') {
+            $scope.seconds = Math.floor(($scope.millis / 1000) % 60);
+            $scope.minutes = Math.floor($scope.millis / 60000);
+            $scope.hours = 0;
+            $scope.days = 0;
+            $scope.months = 0;
+            $scope.years = 0;
+          } else if ($scope.maxTimeUnit === 'hour') {
+            $scope.seconds = Math.floor(($scope.millis / 1000) % 60);
+            $scope.minutes = Math.floor((($scope.millis / (60000)) % 60));
+            $scope.hours = Math.floor($scope.millis / 3600000);
+            $scope.days = 0;
+            $scope.months = 0;
+            $scope.years = 0;
+          } else if ($scope.maxTimeUnit === 'month') {
+            $scope.seconds = Math.floor(($scope.millis / 1000) % 60);
+            $scope.minutes = Math.floor((($scope.millis / (60000)) % 60));
+            $scope.hours = Math.floor((($scope.millis / (3600000)) % 24));
+            $scope.days = Math.floor((($scope.millis / (3600000)) / 24) % 30);
+            $scope.months = Math.floor((($scope.millis / (3600000)) / 24) / 30);
+            $scope.years = 0;
+          } else if ($scope.maxTimeUnit === 'year') {
+            $scope.seconds = Math.floor(($scope.millis / 1000) % 60);
+            $scope.minutes = Math.floor((($scope.millis / (60000)) % 60));
+            $scope.hours = Math.floor((($scope.millis / (3600000)) % 24));
+            $scope.days = Math.floor((($scope.millis / (3600000)) / 24) % 30);
+            $scope.months = Math.floor((($scope.millis / (3600000)) / 24 / 30) % 12);
+            $scope.years = Math.floor(($scope.millis / (3600000)) / 24 / 365);
+          }
+          // plural - singular unit decision
+          $scope.secondsS = ($scope.seconds === 1 || $scope.seconds === 0) ? '' : 's';
+          $scope.minutesS = ($scope.minutes === 1 || $scope.minutes === 0) ? '' : 's';
+          $scope.hoursS = ($scope.hours === 1 || $scope.hours === 0) ? '' : 's';
+          $scope.daysS = ($scope.days === 1 || $scope.days === 0)? '' : 's';
+          $scope.monthsS = ($scope.months === 1 || $scope.months === 0)? '' : 's';
+          $scope.yearsS = ($scope.years === 1 || $scope.years === 0)? '' : 's';
+          //add leading zero if number is smaller than 10
+          $scope.sseconds = $scope.seconds < 10 ? '0' + $scope.seconds : $scope.seconds;
+          $scope.mminutes = $scope.minutes < 10 ? '0' + $scope.minutes : $scope.minutes;
+          $scope.hhours = $scope.hours < 10 ? '0' + $scope.hours : $scope.hours;
+          $scope.ddays = $scope.days < 10 ? '0' + $scope.days : $scope.days;
+          $scope.mmonths = $scope.months < 10 ? '0' + $scope.months : $scope.months;
+          $scope.yyears = $scope.years < 10 ? '0' + $scope.years : $scope.years;
 
         }
+
         //determine initial values of time units and add AddSeconds functionality
         if ($scope.countdownattr) {
           $scope.millis = $scope.countdownattr * 1000;
 
-          $scope.addCDSeconds = $element[0].addCDSeconds = function(extraSeconds){
+          $scope.addCDSeconds = $element[0].addCDSeconds = function (extraSeconds) {
             $scope.countdown += extraSeconds;
             $scope.$digest();
             if (!$scope.isRunning) {
@@ -183,12 +183,12 @@ angular.module('timer', [])
           };
 
           $scope.$on('timer-add-cd-seconds', function (e, extraSeconds) {
-            $timeout(function (){
+            $timeout(function () {
               $scope.addCDSeconds(extraSeconds);
             });
           });
 
-          $scope.$on('timer-set-countdown-seconds', function(e, countdownSeconds) {
+          $scope.$on('timer-set-countdown-seconds', function (e, countdownSeconds) {
             if (!$scope.isRunning) {
               $scope.clear();
             }
@@ -221,6 +221,9 @@ angular.module('timer', [])
             $scope.stop();
             $scope.millis = 0;
             calculateTimeUnits();
+            if($scope.finishCallback) {
+              $scope.$eval($scope.finishCallback);
+            }
             return;
           }
           calculateTimeUnits();
@@ -238,6 +241,9 @@ angular.module('timer', [])
           }
           else if ($scope.countdown <= 0) {
             $scope.stop();
+            if($scope.finishCallback) {
+              $scope.$eval($scope.finishCallback);
+            }
           }
         };
 
@@ -247,3 +253,8 @@ angular.module('timer', [])
       }]
     };
   }]);
+
+/* commonjs package manager support (eg componentjs) */
+if (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports){
+  module.exports = timerModule;
+}

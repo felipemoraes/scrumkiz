@@ -73,6 +73,7 @@ angular.module('starter.controllers', [])
   });
 
   $scope.nextQuestion = function() {
+    $scope.$broadcast('timer-start');
     $scope.answers = [];
     new Question({
       questionId: 0
@@ -81,8 +82,12 @@ angular.module('starter.controllers', [])
     });
   }
 
-
-
+$scope.showAlert = function() {
+   var alertPopup = $ionicPopup.alert({
+     title: 'O seu tempo se acabou!',
+     template: ''
+   });
+ };
 
   SocketIO.on('questions', function(msg) {
     $scope.answerIndex = false;
